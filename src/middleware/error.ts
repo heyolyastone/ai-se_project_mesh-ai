@@ -1,6 +1,13 @@
-import type { ErrorRequestHandler, RequestHandler } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
-export const notFoundHandler: RequestHandler = (req, res): void => {
+type ServerError = Error & {
+  statusCode?: number;
+};
+
+export const notFoundHandler = (
+  req: Request,
+  res: Response,
+): void => {
   res.status(404).json({
     success: false,
     data: null,
@@ -8,20 +15,26 @@ export const notFoundHandler: RequestHandler = (req, res): void => {
   });
 };
 
-export const errorHandler: ErrorRequestHandler = (
-  err,
-  req,
-  res,
-  next,
+export const errorHandler = (
+  err: ServerError,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ): void => {
   void req;
   void next;
 
   console.error(err);
 
-  res.status(500).json({
+  const statusCode = err.statusCode ?? 500;
+  const message =
+    statusCode === 500
+      ? 'An error has occurred on the server'
+      : err.message;
+
+  res.status(statusCode).json({
     success: false,
     data: null,
-    error: 'An error has occurred on the server',
+    error: message,
   });
 };
