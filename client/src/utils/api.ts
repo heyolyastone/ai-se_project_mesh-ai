@@ -1,26 +1,64 @@
-export type Document = {
-  id: string;
-  name: string;
-  uploadedAt: string;
+export type KnowledgeDoc = {
+  _id: string;
+  title: string;
+  fileName: string;
+  userId: string;
+  createdAt: string;
 };
 
-const mockDocuments: Document[] = [
-  {
-    id: "1",
-    name: "Product strategy.pdf",
-    uploadedAt: "2026-01-10",
-  },
-  {
-    id: "2",
-    name: "Engineering handbook.pdf",
-    uploadedAt: "2026-01-12",
-  },
-];
+export type Chat = {
+  _id: string;
+  title: string;
+  userId: string;
+  createdAt: string;
+};
 
-export function getDocuments(): Promise<Document[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockDocuments);
-    }, 500);
-  });
-}
+export type Message = {
+  _id: string;
+  chatId: string;
+  role: "user" | "assistant";
+  content: string;
+  createdAt: string;
+};
+
+export type ApiResponse<T> = {
+  success: boolean;
+  data: T | null;
+  error: { message: string } | null;
+};
+
+const delay = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const getDocuments = async (): Promise<ApiResponse<KnowledgeDoc[]>> => {
+  await delay(700);
+
+  return {
+    success: true,
+    data: [
+      {
+        _id: "1",
+        title: "Code Review Guidelines",
+        fileName: "code-review-guidelines.pdf",
+        userId: "u1",
+        createdAt: new Date().toISOString(),
+      },
+      {
+        _id: "2",
+        title: "API Reference",
+        fileName: "api-reference.pdf",
+        userId: "u1",
+        createdAt: new Date().toISOString(),
+      },
+      {
+        _id: "3",
+        title: "Onboarding Guide",
+        fileName: "onboarding-guide.pdf",
+        userId: "u1",
+        createdAt: new Date().toISOString(),
+      },
+    ],
+    error: null,
+  };
+};

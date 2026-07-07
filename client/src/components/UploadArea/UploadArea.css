@@ -1,9 +1,29 @@
 .upload-area {
-  border: 1px dashed #999;
+  min-height: 120px;
+  background-color: #f4eefc;
   border-radius: 12px;
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.upload-area__input {
+  display: none;
+}
+
+.upload-area__icon {
+  font-size: 24px;
 }
 
 .upload-area__text {
   margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.upload-area__link {
+  text-decoration: underline;
 }
