@@ -1,0 +1,40 @@
+.knowledge-base {
+  padding: 40px;
+}
+
+.knowledge-base__title {
+  margin: 0 0 24px;
+  font-family: "Space Grotesk", Arial, Helvetica, sans-serif;
+}
+
+.knowledge-base__list {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.knowledge-base__item {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.knowledge-base__name {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+.knowledge-base__date {
+  margin: 0;
+  color: #777;
+}
+
+.knowledge-base__status {
+  margin: 24px 0 0;
+}
+
+.knowledge-base__status_type_error {
+  color: #c00;
+}

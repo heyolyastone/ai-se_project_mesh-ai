@@ -1,0 +1,9 @@
+.upload-area {
+  border: 1px dashed #999;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.upload-area__text {
+  margin: 0;
+}
