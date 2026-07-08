@@ -1,4 +1,5 @@
 import { useEffect, useState, type KeyboardEvent } from "react";
+import { useOutletContext } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import {
   createChat,
@@ -10,7 +11,15 @@ import {
 } from "../../utils/api";
 import "./Chat.css";
 
+type MobileContext = {
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: (open: boolean) => void;
+};
+
 export default function Chat() {
+  const { isMobileMenuOpen, setIsMobileMenuOpen } =
+    useOutletContext<MobileContext>();
+
   const [chats, setChats] = useState<ChatType[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [chatsError, setChatsError] = useState<string | null>(null);
@@ -80,6 +89,7 @@ export default function Chat() {
       if (res.data) {
         setChats((prev) => [res.data!, ...prev]);
         setActiveChatId(res.data._id);
+        setIsMobileMenuOpen(false);
       }
     } catch {
       // A toast or inline error could go here in the future.
@@ -135,7 +145,11 @@ export default function Chat() {
 
   return (
     <div className="chat">
-      <aside className="chat__sidebar">
+      <aside
+        className={`chat__sidebar${
+          isMobileMenuOpen ? " chat__sidebar_open" : ""
+        }`}
+      >
         <button
           className="chat__new-btn"
           type="button"
@@ -176,7 +190,10 @@ export default function Chat() {
                     : "chat__item"
                 }
                 type="button"
-                onClick={() => setActiveChatId(chat._id)}
+                onClick={() => {
+                  setActiveChatId(chat._id);
+                  setIsMobileMenuOpen(false);
+                }}
               >
                 {chat.title}
               </button>
@@ -195,7 +212,10 @@ export default function Chat() {
             <button
               className="chat__empty-button"
               type="button"
-              onClick={() => setIsCreatingChat(true)}
+              onClick={() => {
+                setIsCreatingChat(true);
+                setIsMobileMenuOpen(true);
+              }}
             >
               + New Chat
             </button>
