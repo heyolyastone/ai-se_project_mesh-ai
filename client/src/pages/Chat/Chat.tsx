@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   createChat,
   getChat,
   getChats,
+  sendMessage,
   type Chat as ChatType,
   type Message,
 } from "../../utils/api";
@@ -20,6 +21,9 @@ export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [messagesError, setMessagesError] = useState("");
+
+  const [input, setInput] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -79,6 +83,53 @@ export default function Chat() {
       }
     } catch {
       // A toast or inline error could go here in the future.
+    }
+  };
+
+  const handleSend = async () => {
+    const text = input.trim();
+
+    if (!text || !activeChatId || isSending) {
+      return;
+    }
+
+    const userMessage: Message = {
+      _id: Date.now().toString(),
+      chatId: activeChatId,
+      role: "user",
+      content: text,
+      createdAt: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsSending(true);
+
+    try {
+      const res = await sendMessage(activeChatId, text);
+
+      if (res.data) {
+        setMessages((prev) => [...prev, res.data!]);
+      }
+    } catch {
+      const errorMessage: Message = {
+        _id: Date.now().toString(),
+        chatId: activeChatId,
+        role: "assistant",
+        content: "Something went wrong. Please try again.",
+        createdAt: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
@@ -175,26 +226,49 @@ export default function Chat() {
         )}
 
         {activeChatId && !isLoadingMessages && !messagesError && (
-          <ul className="chat__messages">
-            {messages.map((message) => (
-              <li
-                className={
-                  message.role === "user"
-                    ? "chat__message chat__message_role_user"
-                    : "chat__message chat__message_role_assistant"
-                }
-                key={message._id}
+          <>
+            <ul className="chat__messages">
+              {messages.map((message) => (
+                <li
+                  className={
+                    message.role === "user"
+                      ? "chat__message chat__message_role_user"
+                      : "chat__message chat__message_role_assistant"
+                  }
+                  key={message._id}
+                >
+                  {message.role === "assistant" ? (
+                    <div className="chat__markdown">
+                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    message.content
+                  )}
+                </li>
+              ))}
+            </ul>
+
+            <div className="chat__input-bar">
+              <textarea
+                className="chat__input"
+                placeholder="Ask any question"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={isSending}
+                rows={1}
+              />
+              <button
+                className="chat__send"
+                type="button"
+                aria-label="Send message"
+                onClick={handleSend}
+                disabled={isSending || !input.trim()}
               >
-                {message.role === "assistant" ? (
-                  <div className="chat__markdown">
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                  </div>
-                ) : (
-                  message.content
-                )}
-              </li>
-            ))}
-          </ul>
+                ↑
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

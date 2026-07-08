@@ -116,6 +116,42 @@ export const getChat = async (
 ): Promise<ApiResponse<ChatDetails>> => {
   await delay(700);
 
+  const messages: Message[] =
+    chatId.length > 10
+      ? []
+      : [
+          {
+            _id: `${chatId}-1`,
+            chatId,
+            role: "user",
+            content: "What is PostHog?",
+            createdAt: new Date().toISOString(),
+          },
+          {
+            _id: `${chatId}-2`,
+            chatId,
+            role: "assistant",
+            content:
+              "## PostHog overview\n\nPostHog is a product analytics platform. It helps teams understand how users interact with their product.",
+            createdAt: new Date().toISOString(),
+          },
+          {
+            _id: `${chatId}-3`,
+            chatId,
+            role: "user",
+            content: "What can we use it for?",
+            createdAt: new Date().toISOString(),
+          },
+          {
+            _id: `${chatId}-4`,
+            chatId,
+            role: "assistant",
+            content:
+              "You can use it for:\n\n- tracking product events\n- analyzing user behavior\n- building funnels\n- testing hypotheses",
+            createdAt: new Date().toISOString(),
+          },
+        ];
+
   return {
     success: true,
     data: {
@@ -123,38 +159,26 @@ export const getChat = async (
       title: "Chat",
       userId: "u1",
       createdAt: new Date().toISOString(),
-      messages: [
-        {
-          _id: `${chatId}-1`,
-          chatId,
-          role: "user",
-          content: "What is PostHog?",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: `${chatId}-2`,
-          chatId,
-          role: "assistant",
-          content:
-            "## PostHog overview\n\nPostHog is a product analytics platform. It helps teams understand how users interact with their product.",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: `${chatId}-3`,
-          chatId,
-          role: "user",
-          content: "What can we use it for?",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: `${chatId}-4`,
-          chatId,
-          role: "assistant",
-          content:
-            "You can use it for:\n\n- tracking product events\n- analyzing user behavior\n- building funnels\n- testing hypotheses",
-          createdAt: new Date().toISOString(),
-        },
-      ],
+      messages,
+    },
+    error: null,
+  };
+};
+
+export const sendMessage = async (
+  chatId: string,
+  content: string,
+): Promise<ApiResponse<Message>> => {
+  await delay(1500);
+
+  return {
+    success: true,
+    data: {
+      _id: Date.now().toString(),
+      chatId,
+      role: "assistant",
+      content: `You asked: "${content}"\n\nThis is a mock assistant response. In a later sprint, this will come from the real API.`,
+      createdAt: new Date().toISOString(),
     },
     error: null,
   };
