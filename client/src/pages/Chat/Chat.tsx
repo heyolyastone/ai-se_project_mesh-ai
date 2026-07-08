@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { createChat, getChats, type Chat as ChatType } from "../../utils/api";
+import ReactMarkdown from "react-markdown";
+import {
+  createChat,
+  getChat,
+  getChats,
+  type Chat as ChatType,
+  type Message,
+} from "../../utils/api";
 import "./Chat.css";
 
 export default function Chat() {
@@ -10,6 +17,10 @@ export default function Chat() {
   const [isCreatingChat, setIsCreatingChat] = useState(false);
   const [newChatTitle, setNewChatTitle] = useState("");
 
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [messagesError, setMessagesError] = useState("");
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -17,7 +28,6 @@ export default function Chat() {
 
         if (res.data) {
           setChats(res.data);
-          setActiveChatId(res.data[0]?._id ?? null);
         } else {
           setChats([]);
         }
@@ -30,6 +40,29 @@ export default function Chat() {
 
     load();
   }, []);
+
+  useEffect(() => {
+    if (!activeChatId) {
+      return;
+    }
+
+    const load = async () => {
+      setMessages([]);
+      setMessagesError("");
+      setIsLoadingMessages(true);
+
+      try {
+        const res = await getChat(activeChatId);
+        setMessages(res.data?.messages ?? []);
+      } catch {
+        setMessagesError("Failed to load messages.");
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    };
+
+    load();
+  }, [activeChatId]);
 
   const handleCreateChat = async () => {
     const title = newChatTitle.trim() || "New Chat";
@@ -102,7 +135,67 @@ export default function Chat() {
       </aside>
 
       <div className="chat__main">
-        {/* message area — coming next lesson */}
+        {!messagesError && !isLoadingMessages && !activeChatId && (
+          <div className="chat__no-messages">
+            <h2 className="chat__empty-title">No chats</h2>
+            <p className="chat__empty-text">
+              Create a new chat or select one from the sidebar.
+            </p>
+            <button
+              className="chat__empty-button"
+              type="button"
+              onClick={() => setIsCreatingChat(true)}
+            >
+              + New Chat
+            </button>
+          </div>
+        )}
+
+        {!messagesError &&
+          !isLoadingMessages &&
+          activeChatId &&
+          messages.length === 0 && (
+            <div className="chat__no-messages">
+              <h2 className="chat__empty-title">No messages yet</h2>
+              <p className="chat__empty-text">
+                This chat is ready, but it does not have messages yet.
+              </p>
+            </div>
+          )}
+
+        {activeChatId && isLoadingMessages && (
+          <p className="chat__no-messages">Loading messages…</p>
+        )}
+
+        {activeChatId && messagesError && (
+          <div className="chat__error">
+            <h2 className="chat__empty-title">Chat error</h2>
+            <p className="chat__empty-text">{messagesError}</p>
+          </div>
+        )}
+
+        {activeChatId && !isLoadingMessages && !messagesError && (
+          <ul className="chat__messages">
+            {messages.map((message) => (
+              <li
+                className={
+                  message.role === "user"
+                    ? "chat__message chat__message_role_user"
+                    : "chat__message chat__message_role_assistant"
+                }
+                key={message._id}
+              >
+                {message.role === "assistant" ? (
+                  <div className="chat__markdown">
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
+                ) : (
+                  message.content
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

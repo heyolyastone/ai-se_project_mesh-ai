@@ -59,4 +59,82 @@
 
 .chat__main {
   padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat__no-messages,
+.chat__error {
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #777;
+}
+
+.chat__empty-title {
+  margin: 0 0 8px;
+  font-family: "Space Grotesk", Arial, Helvetica, sans-serif;
+  color: #1f1f1f;
+}
+
+.chat__empty-text {
+  margin: 0;
+}
+
+.chat__empty-button {
+  margin-top: 16px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background-color: #1f1f1f;
+  color: #fff;
+}
+
+.chat__messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chat__message {
+  max-width: 70%;
+  padding: 14px 16px;
+  border-radius: 16px;
+}
+
+.chat__message_role_user {
+  align-self: flex-end;
+  background-color: #1f1f1f;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.chat__message_role_assistant {
+  align-self: flex-start;
+  background-color: #f4f4f4;
+  color: #1f1f1f;
+  border-bottom-left-radius: 4px;
+}
+
+.chat__markdown h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.chat__markdown p {
+  margin: 0 0 8px;
+}
+
+.chat__markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.chat__markdown ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
 }

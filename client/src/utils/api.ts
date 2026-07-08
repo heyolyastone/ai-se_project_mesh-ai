@@ -21,6 +21,10 @@ export type Message = {
   createdAt: string;
 };
 
+export type ChatDetails = Chat & {
+  messages: Message[];
+};
+
 export type ApiResponse<T> = {
   success: boolean;
   data: T | null;
@@ -102,6 +106,55 @@ export const createChat = async (title: string): Promise<ApiResponse<Chat>> => {
       title,
       userId: "u1",
       createdAt: new Date().toISOString(),
+    },
+    error: null,
+  };
+};
+
+export const getChat = async (
+  chatId: string,
+): Promise<ApiResponse<ChatDetails>> => {
+  await delay(700);
+
+  return {
+    success: true,
+    data: {
+      _id: chatId,
+      title: "Chat",
+      userId: "u1",
+      createdAt: new Date().toISOString(),
+      messages: [
+        {
+          _id: `${chatId}-1`,
+          chatId,
+          role: "user",
+          content: "What is PostHog?",
+          createdAt: new Date().toISOString(),
+        },
+        {
+          _id: `${chatId}-2`,
+          chatId,
+          role: "assistant",
+          content:
+            "## PostHog overview\n\nPostHog is a product analytics platform. It helps teams understand how users interact with their product.",
+          createdAt: new Date().toISOString(),
+        },
+        {
+          _id: `${chatId}-3`,
+          chatId,
+          role: "user",
+          content: "What can we use it for?",
+          createdAt: new Date().toISOString(),
+        },
+        {
+          _id: `${chatId}-4`,
+          chatId,
+          role: "assistant",
+          content:
+            "You can use it for:\n\n- tracking product events\n- analyzing user behavior\n- building funnels\n- testing hypotheses",
+          createdAt: new Date().toISOString(),
+        },
+      ],
     },
     error: null,
   };
