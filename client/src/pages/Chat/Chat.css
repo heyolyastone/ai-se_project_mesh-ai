@@ -76,7 +76,6 @@
 
 .chat__empty-title {
   margin: 0 0 8px;
-  font-family: "Space Grotesk", Arial, Helvetica, sans-serif;
   color: #1f1f1f;
 }
 
@@ -178,40 +177,32 @@
 
 @media (max-width: 1200px) {
   .chat {
-    display: block;
+    display: flex;
+    flex-direction: column;
     min-height: calc(100vh - 65px);
+    gap: 16px;
   }
 
   .chat__sidebar {
-    position: fixed;
-    top: 65px;
-    left: 0;
-    bottom: 0;
-    width: 75%;
-    height: 70%;
-    max-width: 255px;
-    z-index: 102;
-    background: #fff;
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
+    position: static;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    max-height: 260px;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+    transform: none;
     padding: 16px;
-    border-right: 1px solid #e5e5e5;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    background: #fff;
   }
 
   .chat__sidebar_open {
-    transform: translateX(0);
+    transform: none;
   }
 
   .chat__main {
-    padding: 24px 0;
-  }
-
-  .chat__messages,
-  .chat__input-bar {
-    margin-left: 0;
+    padding: 8px 0 24px;
   }
 
   .chat__message {

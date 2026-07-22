@@ -13,8 +13,26 @@ export default function UploadArea({ onFileSelect }: Props) {
     }
   };
 
+  const handleDragOver = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+
+    const file = event.dataTransfer.files?.[0];
+
+    if (file) {
+      onFileSelect(file);
+    }
+  };
+
   return (
-    <label className="upload-area">
+    <label
+      className="upload-area"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <input
         className="upload-area__input"
         type="file"
