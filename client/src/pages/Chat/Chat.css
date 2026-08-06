@@ -209,3 +209,8 @@
     max-width: 90%;
   }
 }
+
+.chat__message_thinking {
+  opacity: 0.7;
+  font-style: italic;
+}

@@ -20,3 +20,6 @@ export const buildContext = (chunks: { text: string }[]): string => {
 
   return chunks.map((chunk, i) => `Chunk ${i + 1}: ${chunk.text}`).join('\n\n');
 };
+
+export const stripThinking = (text: string): string =>
+  text.replace(/<think>[\s\S]*?<\/think>\s*/g, '').trim();

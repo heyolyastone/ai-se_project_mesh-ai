@@ -8,6 +8,7 @@ import {
   buildContext,
   getClient,
   LLM_MODEL,
+  stripThinking,
 } from '../utils/openai-client.js';
 
 export const askQuestion = async (
@@ -61,7 +62,8 @@ export const askQuestion = async (
   });
 
   const answer =
-    response.choices[0]?.message?.content ?? 'No answer generated.';
+    stripThinking(response.choices[0]?.message?.content ?? '') ||
+    'No answer returned.';
 
   res.status(200).json({
     success: true,

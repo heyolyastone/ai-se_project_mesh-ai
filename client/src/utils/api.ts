@@ -23,7 +23,8 @@ export type Message = {
   createdAt: string;
 };
 
-export type ChatDetails = Chat & {
+export type ChatDetails = {
+  chat: Chat;
   messages: Message[];
 };
 
@@ -69,10 +70,6 @@ async function request<T>(
 
   return res.json();
 }
-
-const delay = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
 
 export function getCurrentUser() {
   return request<CurrentUser>(`${BASE_URL}/users/me`);
@@ -132,119 +129,24 @@ export const uploadDocument = async (
   return res.json();
 };
 
-export const getChats = async (): Promise<ApiResponse<Chat[]>> => {
-  await delay(700);
-
-  return {
-    success: true,
-    data: [
-      {
-        _id: "1",
-        title: "What is posthog",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        _id: "2",
-        title: "Who are our users",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        _id: "3",
-        title: "Marketing Hypothesis",
-        userId: "u1",
-        createdAt: new Date().toISOString(),
-      },
-    ],
-    error: null,
-  };
+export const getChats = async () => {
+  return request<Chat[]>(`${BASE_URL}/chats`);
 };
 
-export const createChat = async (title: string): Promise<ApiResponse<Chat>> => {
-  await delay(400);
-
-  return {
-    success: true,
-    data: {
-      _id: Date.now().toString(),
-      title,
-      userId: "u1",
-      createdAt: new Date().toISOString(),
-    },
-    error: null,
-  };
+export const createChat = async (title: string) => {
+  return request<Chat>(`${BASE_URL}/chats`, {
+    method: "POST",
+    body: JSON.stringify({ title }),
+  });
 };
 
-export const getChat = async (
-  chatId: string,
-): Promise<ApiResponse<ChatDetails>> => {
-  await delay(700);
-
-  const messages: Message[] =
-    chatId.length > 10
-      ? []
-      : [
-          {
-            _id: `${chatId}-1`,
-            chatId,
-            role: "user",
-            content: "What is PostHog?",
-            createdAt: new Date().toISOString(),
-          },
-          {
-            _id: `${chatId}-2`,
-            chatId,
-            role: "assistant",
-            content:
-              "## PostHog overview\n\nPostHog is a product analytics platform. It helps teams understand how users interact with their product.",
-            createdAt: new Date().toISOString(),
-          },
-          {
-            _id: `${chatId}-3`,
-            chatId,
-            role: "user",
-            content: "What can we use it for?",
-            createdAt: new Date().toISOString(),
-          },
-          {
-            _id: `${chatId}-4`,
-            chatId,
-            role: "assistant",
-            content:
-              "You can use it for:\n\n- tracking product events\n- analyzing user behavior\n- building funnels\n- testing hypotheses",
-            createdAt: new Date().toISOString(),
-          },
-        ];
-
-  return {
-    success: true,
-    data: {
-      _id: chatId,
-      title: "Chat",
-      userId: "u1",
-      createdAt: new Date().toISOString(),
-      messages,
-    },
-    error: null,
-  };
+export const getChat = async (id: string) => {
+  return request<ChatDetails>(`${BASE_URL}/chats/${id}`);
 };
 
-export const sendMessage = async (
-  chatId: string,
-  content: string,
-): Promise<ApiResponse<Message>> => {
-  await delay(1500);
-
-  return {
-    success: true,
-    data: {
-      _id: Date.now().toString(),
-      chatId,
-      role: "assistant",
-      content: `You asked: "${content}"\n\nThis is a mock assistant response. In a later sprint, this will come from the real API.`,
-      createdAt: new Date().toISOString(),
-    },
-    error: null,
-  };
+export const sendMessage = async (chatId: string, question: string) => {
+  return request<Message[]>(`${BASE_URL}/chats/${chatId}/messages`, {
+    method: "POST",
+    body: JSON.stringify({ question }),
+  });
 };

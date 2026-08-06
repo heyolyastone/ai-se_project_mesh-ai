@@ -92,7 +92,7 @@ export default function Chat() {
         setIsMobileMenuOpen(false);
       }
     } catch {
-      // A toast or inline error could go here in the future.
+      setChatsError("Failed to create chat.");
     }
   };
 
@@ -119,7 +119,10 @@ export default function Chat() {
       const res = await sendMessage(activeChatId, text);
 
       if (res.data) {
-        setMessages((prev) => [...prev, res.data!]);
+        setMessages((prev) => [
+          ...prev.filter((message) => message._id !== userMessage._id),
+          ...res.data!,
+        ]);
       }
     } catch {
       const errorMessage: Message = {
@@ -266,6 +269,12 @@ export default function Chat() {
                   )}
                 </li>
               ))}
+
+              {isSending && (
+                <li className="chat__message chat__message_role_assistant chat__message_thinking">
+                  Thinking…
+                </li>
+              )}
             </ul>
 
             <div className="chat__input-bar">
