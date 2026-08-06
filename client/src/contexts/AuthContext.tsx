@@ -1,0 +1,65 @@
+import { createContext, useContext, useEffect, useState } from "react";
+import type { ReactNode } from "react";
+
+import type { CurrentUser } from "../types";
+
+type AuthContextValue = {
+  currentUser: CurrentUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: (token: string, user: CurrentUser) => void;
+  logout: () => void;
+};
+
+export const AuthContext = createContext<AuthContextValue>({
+  currentUser: null,
+  isAuthenticated: false,
+  isLoading: false,
+  login: () => {},
+  logout: () => {},
+});
+
+type AuthProviderProps = {
+  children: ReactNode;
+};
+
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("auth-token");
+
+    if (!token) {
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(false);
+  }, []);
+
+  function login(token: string, user: CurrentUser) {
+    localStorage.setItem("auth-token", token);
+    setCurrentUser(user);
+    setIsAuthenticated(true);
+  }
+
+  function logout() {
+    localStorage.removeItem("auth-token");
+    setCurrentUser(null);
+    setIsAuthenticated(false);
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{ currentUser, isAuthenticated, isLoading, login, logout }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
