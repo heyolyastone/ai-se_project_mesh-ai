@@ -25,6 +25,7 @@
 
 .header__nav {
   display: flex;
+  align-items: center;
   gap: 12px;
 }
 
@@ -36,6 +37,42 @@
 }
 
 .header__link_active {
+  background-color: #eee7ff;
+}
+
+.header__account {
+  position: relative;
+}
+
+.header__dropdown-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #1f1f1f;
+  background-color: #f5f5f5;
+}
+
+.header__menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 140px;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+
+.header__logout-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #1f1f1f;
+  text-align: left;
+}
+
+.header__logout-btn:hover {
   background-color: #eee7ff;
 }
 
@@ -77,7 +114,17 @@
     display: flex;
   }
 
-  .header__link {
+  .header__link,
+  .header__account,
+  .header__dropdown-btn {
     width: 100%;
+  }
+
+  .header__menu {
+    position: static;
+    width: 100%;
+    margin-top: 8px;
+    box-shadow: none;
+    background-color: #f5f5f5;
   }
 }
