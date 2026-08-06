@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 import type { CurrentUser } from "../types";
+import { getCurrentUser } from "../utils/api";
 
 type AuthContextValue = {
   currentUser: CurrentUser | null;
@@ -36,7 +37,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return;
     }
 
-    setIsLoading(false);
+    getCurrentUser()
+      .then((res) => {
+        if (res.data) {
+          setCurrentUser(res.data);
+          setIsAuthenticated(true);
+        }
+      })
+      .catch(() => {
+        localStorage.removeItem("auth-token");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   function login(token: string, user: CurrentUser) {

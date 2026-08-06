@@ -1,8 +1,10 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import type { FormEvent } from "react";
 
 import logo from "../../assets/logo.svg";
 import { useFormWithValidation } from "../../hooks/useFormWithValidation";
+import { registerUser } from "../../utils/api";
 
 function getNavLinkClass({ isActive }: { isActive: boolean }) {
   return isActive ? "form__nav-link form__nav-link_active" : "form__nav-link";
@@ -10,15 +12,21 @@ function getNavLinkClass({ isActive }: { isActive: boolean }) {
 
 export default function Register() {
   const { values, errors, isValid, handleChange } = useFormWithValidation();
+  const [statusMessage, setStatusMessage] = useState("");
+  const navigate = useNavigate();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setStatusMessage("");
 
-    console.log({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-    });
+    try {
+      await registerUser(values.name, values.email, values.password);
+      navigate("/login");
+    } catch (err) {
+      setStatusMessage(
+        err instanceof Error ? err.message : "Something went wrong",
+      );
+    }
   }
 
   return (
@@ -82,7 +90,9 @@ export default function Register() {
           <span className="form__error">{errors.password}</span>
         </label>
 
-        <p className="form__status" aria-live="polite" />
+        <p className="form__status" aria-live="polite">
+          {statusMessage}
+        </p>
 
         <button className="form__submit" type="submit" disabled={!isValid}>
           Create account

@@ -1,8 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import type { FormEvent } from "react";
 
 import logo from "../../assets/logo.svg";
 import { useFormWithValidation } from "../../hooks/useFormWithValidation";
+import { loginUser } from "../../utils/api";
+import { useAuth } from "../../contexts/AuthContext";
 
 function getNavLinkClass({ isActive }: { isActive: boolean }) {
   return isActive ? "form__nav-link form__nav-link_active" : "form__nav-link";
@@ -10,14 +13,26 @@ function getNavLinkClass({ isActive }: { isActive: boolean }) {
 
 export default function Login() {
   const { values, errors, isValid, handleChange } = useFormWithValidation();
+  const [statusMessage, setStatusMessage] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setStatusMessage("");
 
-    console.log({
-      email: values.email,
-      password: values.password,
-    });
+    try {
+      const res = await loginUser(values.email, values.password);
+
+      if (res.data) {
+        login(res.data.token, res.data.user);
+        navigate("/knowledge");
+      }
+    } catch (err) {
+      setStatusMessage(
+        err instanceof Error ? err.message : "Something went wrong",
+      );
+    }
   }
 
   return (
@@ -66,7 +81,9 @@ export default function Login() {
           <span className="form__error">{errors.password}</span>
         </label>
 
-        <p className="form__status" aria-live="polite" />
+        <p className="form__status" aria-live="polite">
+          {statusMessage}
+        </p>
 
         <button className="form__submit" type="submit" disabled={!isValid}>
           Log in
