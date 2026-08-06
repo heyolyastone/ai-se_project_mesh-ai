@@ -10,6 +10,11 @@
   cursor: pointer;
 }
 
+.upload-area_disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
 .upload-area__input {
   display: none;
 }

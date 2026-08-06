@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
+
 import UploadArea from "../../components/UploadArea/UploadArea";
-import { getDocuments, type KnowledgeDoc } from "../../utils/api";
+import {
+  getDocuments,
+  uploadDocument,
+  type KnowledgeDoc,
+} from "../../utils/api";
 import deleteIcon from "../../assets/delete.svg";
 import "./KnowledgeBase.css";
 
 export default function KnowledgeBase() {
   const [documents, setDocuments] = useState<KnowledgeDoc[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -29,16 +35,21 @@ export default function KnowledgeBase() {
     load();
   }, []);
 
-  const handleFileSelect = (file: File) => {
-    const newDoc: KnowledgeDoc = {
-      _id: Date.now().toString(),
-      title: file.name,
-      fileName: file.name,
-      userId: "local",
-      createdAt: new Date().toISOString(),
-    };
+  const handleFileSelect = async (file: File) => {
+    setIsUploading(true);
+    setError(null);
 
-    setDocuments([newDoc, ...documents]);
+    try {
+      const res = await uploadDocument(file);
+
+      if (res.data) {
+        setDocuments((currentDocuments) => [res.data!, ...currentDocuments]);
+      }
+    } catch {
+      setError("Failed to upload document.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -48,7 +59,10 @@ export default function KnowledgeBase() {
       <section className="knowledge-base__content">
         <p className="knowledge-base__label">Upload documents (PDF)</p>
 
-        <UploadArea onFileSelect={handleFileSelect} />
+        <UploadArea
+          onFileSelect={handleFileSelect}
+          isUploading={isUploading}
+        />
 
         <div className="knowledge-base__library">
           {isLoading && (
@@ -82,10 +96,6 @@ export default function KnowledgeBase() {
             </ul>
           )}
         </div>
-
-        <button className="knowledge-base__save-button" type="button">
-          Save
-        </button>
       </section>
     </div>
   );
