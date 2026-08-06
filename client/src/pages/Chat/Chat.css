@@ -214,3 +214,36 @@
   opacity: 0.7;
   font-style: italic;
 }
+
+.chat::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 340px;
+  background: linear-gradient(to bottom, transparent 0%, #fff 35%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.chat__messages {
+  padding-bottom: 180px;
+}
+
+.chat__input-bar {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  left: 320px;
+  z-index: 100;
+  background-color: #fff;
+}
+
+@media (max-width: 1200px) {
+  .chat__input-bar {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+}

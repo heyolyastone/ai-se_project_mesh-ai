@@ -1,4 +1,4 @@
-import { useEffect, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { useOutletContext } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import {
@@ -33,6 +33,7 @@ export default function Chat() {
 
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const messagesEndRef = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -53,6 +54,10 @@ export default function Chat() {
 
     load();
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     if (!activeChatId) {
@@ -275,6 +280,8 @@ export default function Chat() {
                   Thinking…
                 </li>
               )}
+
+              <li ref={messagesEndRef} />
             </ul>
 
             <div className="chat__input-bar">
