@@ -16,6 +16,9 @@ export default function Intro() {
 
         <div className="intro__cards">
           <article className="intro__card">
+            <div className="intro__card-icon" aria-hidden="true">
+              ↑
+            </div>
             <h2 className="intro__card-title">Upload documents</h2>
             <p className="intro__card-text">
               Add files to your knowledge base so Mesh AI can work with your
@@ -24,6 +27,9 @@ export default function Intro() {
           </article>
 
           <article className="intro__card">
+            <div className="intro__card-icon" aria-hidden="true">
+              □
+            </div>
             <h2 className="intro__card-title">Manage knowledge</h2>
             <p className="intro__card-text">
               View uploaded documents and keep your workspace organized.
@@ -31,6 +37,9 @@ export default function Intro() {
           </article>
 
           <article className="intro__card">
+            <div className="intro__card-icon" aria-hidden="true">
+              ✦
+            </div>
             <h2 className="intro__card-title">Chat with AI</h2>
             <p className="intro__card-text">
               Ask questions and get helpful answers based on your saved content.

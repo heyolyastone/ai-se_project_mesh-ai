@@ -150,3 +150,9 @@ export const sendMessage = async (chatId: string, question: string) => {
     body: JSON.stringify({ question }),
   });
 };
+
+export const deleteDocument = async (id: string) => {
+  return request<{ message: string }>(`${BASE_URL}/documents/${id}`, {
+    method: "DELETE",
+  });
+};

@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { FormEvent } from "react";
 
@@ -16,6 +16,8 @@ export default function Login() {
   const [statusMessage, setStatusMessage] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/knowledge";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -26,7 +28,7 @@ export default function Login() {
 
       if (res.data) {
         login(res.data.token, res.data.user);
-        navigate("/knowledge");
+        navigate(from, { replace: true });
       }
     } catch (err) {
       setStatusMessage(

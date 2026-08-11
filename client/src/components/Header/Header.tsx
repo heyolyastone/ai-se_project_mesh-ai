@@ -69,7 +69,10 @@ export default function Header({
               aria-expanded={isAccountMenuOpen}
               onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
             >
-              {currentUser?.name}'s Account
+              <span>{currentUser?.name}'s Account</span>
+              <span className="header__dropdown-arrow" aria-hidden="true">
+                ▾
+              </span>
             </button>
 
             {isAccountMenuOpen && (
