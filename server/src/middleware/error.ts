@@ -1,5 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 
+import { logger } from '../utils/logger.js';
+
 type ServerError = Error & {
   statusCode?: number;
 };
@@ -21,7 +23,7 @@ export const errorHandler = (
   void req;
   void next;
 
-  console.error(err);
+  logger.error(err.message, { stack: err.stack });
 
   const statusCode = err.statusCode ?? 500;
   const message =

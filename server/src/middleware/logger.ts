@@ -1,10 +1,5 @@
-import type { Request, Response, NextFunction } from 'express';
+import morgan from 'morgan';
 
-export const logger = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
-  console.log(`${req.method} ${req.path}`);
-  next();
-};
+const isProduction = process.env.NODE_ENV === 'production';
+
+export const requestLogger = morgan(isProduction ? 'combined' : 'dev');
