@@ -86,3 +86,9 @@ https://meshai-olga.mooo.com
 ## CI/CD
 
 GitHub Actions is used to validate the client and server. The CI workflow runs build and lint checks for both parts of the application.
+
+## Project Pitch Video
+
+Check out this video, where I describe my MeshAI project and some challenges I faced while building and deploying it.
+
+[Watch the MeshAI Project Pitch](https://www.loom.com/share/876503ebe9d74298b1f1d63dfdcc3dc5)
